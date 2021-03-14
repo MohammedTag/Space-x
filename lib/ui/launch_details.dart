@@ -20,7 +20,9 @@ class LaunchDetailsPage extends StatelessWidget {
         title: Text('Launch Details'),
       ),
       body: FutureBuilder<Response>(
-        future: Provider.of<PostApiService>(context).getRocket(launchId),
+        future: Provider.of<PostApiService>(context).getRocket(launchId).then(
+            (launchpad) => Provider.of<PostApiService>(context)
+                .getLaunchpad(launchpad.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final Map rocket = json.decode(snapshot.data.bodyString);
@@ -32,6 +34,53 @@ class LaunchDetailsPage extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  /* body: MultiProvider(
+          providers: [
+            Provider<PostApiService>(create: (_) => rocketDetails(context)),
+            /*Provider<SomethingElse>(create: (_) => SomethingElse()),
+            Provider<AnotherThing>(create: (_) => AnotherThing()),*/
+          ],
+         // child: _buildDetails(),
+        )*/
+  Provider<PostApiService> rocketDetails(BuildContext context) {
+    return Provider(
+        create: (_) => PostApiService.create(),
+        dispose: (_, PostApiService service) => service.client.dispose(),
+        child: _buildBody(context));
+  }
+
+  FutureBuilder<Response> _buildBody(BuildContext context) {
+    return FutureBuilder<Response>(
+      // 2
+      future: Provider.of<PostApiService>(context).getRocket(launchId),
+      builder: (context, snapshot) {
+        // 3
+        if (snapshot.connectionState == ConnectionState.done) {
+          // 4
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                textAlign: TextAlign.center,
+                textScaleFactor: 1.3,
+              ),
+            );
+          }
+          // 5
+          Map popular = snapshot.data.body;
+          // 6
+          return _buildDetails(popular);
+        } else {
+          // 7
+          // Show a loading indicator while waiting for the movies
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
