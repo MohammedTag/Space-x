@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'data/post_api_service.dart';
+import 'data/spacex_api_service.dart';
 import 'ui/home_page.dart';
 
 void main() => runApp(MyApp());
@@ -11,9 +11,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
       // The initialized PostApiService is now available down the widget tree
-      create: (_) => PostApiService.create(),
+      create: (_) => SpacexApiService.create(),
       // Always call dispose on the ChopperClient to release resources
-      dispose: (context, PostApiService service) => service.client.dispose(),
+      dispose: (context, SpacexApiService service) => service.client.dispose(),
       child: MaterialApp(
         title: 'Material App',
         home: HomePage(),

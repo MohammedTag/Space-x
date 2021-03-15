@@ -1,9 +1,9 @@
 import 'package:chopper/chopper.dart';
 
-part 'post_api_service.chopper.dart';
+part 'spacex_api_service.chopper.dart';
 
 @ChopperApi(baseUrl: "/v4")
-abstract class PostApiService extends ChopperService {
+abstract class SpacexApiService extends ChopperService {
   @Get(path: "/launches/past")
   Future<Response> getPastLaunches();
 
@@ -16,11 +16,11 @@ abstract class PostApiService extends ChopperService {
   @Get(path: "/payloads/{id}")
   Future<Response> getPayload(@Path() String id);
 
-  static PostApiService create() {
+  static SpacexApiService create() {
     final client = ChopperClient(
         baseUrl: "https://api.spacexdata.com",
-        services: [_$PostApiService()],
+        services: [_$SpacexApiService()],
         converter: JsonConverter());
-    return _$PostApiService(client);
+    return _$SpacexApiService(client);
   }
 }
